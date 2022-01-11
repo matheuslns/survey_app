@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import '../../data/models/models.dart';
+import '../../domain/entities/entities.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 import '../http/http.dart';
@@ -10,13 +12,15 @@ class RemoteAuthentication {
 
   RemoteAuthentication({@required this.httpClient, @required this.url});
 
-  Future<void> auth(AuthenticationParams params) async {
+  Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
-      await httpClient.request(
+      final response = await httpClient.request(
         url: url,
         method: 'post',
         body: RemoteAuthenticationParams.fromDomain(params).toJson(),
       );
+
+      return RemoteAccountModel.fromJson(response).toEntity();
     } on HttpError catch (error) {
       switch (error) {
         case HttpError.unauthorized:
