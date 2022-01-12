@@ -41,7 +41,7 @@ class LoginPage extends StatelessWidget {
                     const SizedBox(height: 32.0),
                     RaisedButton(
                       child: Text('Entrar'),
-                      onPressed: () {},
+                      onPressed: null,
                     ),
                     const SizedBox(height: 8.0),
                     FlatButton.icon(
