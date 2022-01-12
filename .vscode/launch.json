@@ -11,7 +11,7 @@
             "program": "./test/"
         },
         {
-            "name": "survey_app",
+            "name": "Survey App",
             "request": "launch",
             "type": "dart",
             "program": "lib/main/main.dart"
