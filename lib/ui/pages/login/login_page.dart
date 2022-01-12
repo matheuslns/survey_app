@@ -64,7 +64,8 @@ class LoginPage extends StatelessWidget {
                         builder: (context, snapshot) {
                           return RaisedButton(
                             child: Text('Entrar'),
-                            onPressed: snapshot.data == true ? () {} : null,
+                            onPressed:
+                                snapshot.data == true ? presenter.auth : null,
                           );
                         }),
                     const SizedBox(height: 8.0),
