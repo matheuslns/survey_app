@@ -54,35 +54,19 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         EmailInput(),
                         const SizedBox(height: 8),
-                        StreamBuilder<String>(
-                            stream: widget.presenter.passwordErrorStream,
-                            builder: (context, snapshot) {
-                              return TextFormField(
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  labelText: 'Senha',
-                                  icon: Icon(
-                                    Icons.lock,
-                                    color: Theme.of(context).primaryColorLight,
-                                  ),
-                                  errorText: snapshot.data?.isEmpty == true
-                                      ? null
-                                      : snapshot.data,
-                                ),
-                                onChanged: widget.presenter.validatePassword,
-                              );
-                            }),
+                        PasswordInput(),
                         const SizedBox(height: 32.0),
                         StreamBuilder<bool>(
-                            stream: widget.presenter.isFormValidStream,
-                            builder: (context, snapshot) {
-                              return RaisedButton(
-                                child: Text('Entrar'),
-                                onPressed: snapshot.data == true
-                                    ? widget.presenter.auth
-                                    : null,
-                              );
-                            }),
+                          stream: widget.presenter.isFormValidStream,
+                          builder: (context, snapshot) {
+                            return RaisedButton(
+                              child: Text('Entrar'),
+                              onPressed: snapshot.data == true
+                                  ? widget.presenter.auth
+                                  : null,
+                            );
+                          },
+                        ),
                         const SizedBox(height: 8.0),
                         FlatButton.icon(
                           icon: Icon(Icons.person),
