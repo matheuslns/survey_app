@@ -59,10 +59,14 @@ class LoginPage extends StatelessWidget {
                           );
                         }),
                     const SizedBox(height: 32.0),
-                    RaisedButton(
-                      child: Text('Entrar'),
-                      onPressed: null,
-                    ),
+                    StreamBuilder<bool>(
+                        stream: presenter.isFormValidStream,
+                        builder: (context, snapshot) {
+                          return RaisedButton(
+                            child: Text('Entrar'),
+                            onPressed: snapshot.data == true ? () {} : null,
+                          );
+                        }),
                     const SizedBox(height: 8.0),
                     FlatButton.icon(
                       icon: Icon(Icons.person),
