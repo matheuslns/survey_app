@@ -56,17 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 8),
                         PasswordInput(),
                         const SizedBox(height: 32.0),
-                        StreamBuilder<bool>(
-                          stream: widget.presenter.isFormValidStream,
-                          builder: (context, snapshot) {
-                            return RaisedButton(
-                              child: Text('Entrar'),
-                              onPressed: snapshot.data == true
-                                  ? widget.presenter.auth
-                                  : null,
-                            );
-                          },
-                        ),
+                        LoginButton(),
                         const SizedBox(height: 8.0),
                         FlatButton.icon(
                           icon: Icon(Icons.person),
