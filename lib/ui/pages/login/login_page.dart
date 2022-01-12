@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../components/components.dart';
+import '../../components/components.dart';
+import '../../pages/pages.dart';
 
 class LoginPage extends StatelessWidget {
+  final LoginPresenter presenter;
+
+  const LoginPage(this.presenter);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +30,7 @@ class LoginPage extends StatelessWidget {
                           color: Theme.of(context).primaryColorLight,
                         ),
                       ),
+                      onChanged: presenter.validateEmail,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -37,6 +42,7 @@ class LoginPage extends StatelessWidget {
                           color: Theme.of(context).primaryColorLight,
                         ),
                       ),
+                      onChanged: presenter.validatePassword,
                     ),
                     const SizedBox(height: 32.0),
                     RaisedButton(
