@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 import '../../pages/pages.dart';
+import 'components/components.dart';
 
 class LoginPage extends StatefulWidget {
   final LoginPresenter presenter;
@@ -45,64 +47,50 @@ class _LoginPageState extends State<LoginPage> {
               HeadLine1(text: 'Login'),
               Padding(
                 padding: const EdgeInsets.all(32.0),
-                child: Form(
-                  child: Column(
-                    children: [
-                      StreamBuilder<String>(
-                          stream: widget.presenter.emailErrorStream,
-                          builder: (context, snapshot) {
-                            return TextFormField(
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                icon: Icon(
-                                  Icons.email,
-                                  color: Theme.of(context).primaryColorLight,
+                child: Provider(
+                  create: (_) => widget.presenter,
+                  child: Form(
+                    child: Column(
+                      children: [
+                        EmailInput(),
+                        const SizedBox(height: 8),
+                        StreamBuilder<String>(
+                            stream: widget.presenter.passwordErrorStream,
+                            builder: (context, snapshot) {
+                              return TextFormField(
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  labelText: 'Senha',
+                                  icon: Icon(
+                                    Icons.lock,
+                                    color: Theme.of(context).primaryColorLight,
+                                  ),
+                                  errorText: snapshot.data?.isEmpty == true
+                                      ? null
+                                      : snapshot.data,
                                 ),
-                                errorText: snapshot.data?.isEmpty == true
-                                    ? null
-                                    : snapshot.data,
-                              ),
-                              onChanged: widget.presenter.validateEmail,
-                            );
-                          }),
-                      const SizedBox(height: 8),
-                      StreamBuilder<String>(
-                          stream: widget.presenter.passwordErrorStream,
-                          builder: (context, snapshot) {
-                            return TextFormField(
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                labelText: 'Senha',
-                                icon: Icon(
-                                  Icons.lock,
-                                  color: Theme.of(context).primaryColorLight,
-                                ),
-                                errorText: snapshot.data?.isEmpty == true
-                                    ? null
-                                    : snapshot.data,
-                              ),
-                              onChanged: widget.presenter.validatePassword,
-                            );
-                          }),
-                      const SizedBox(height: 32.0),
-                      StreamBuilder<bool>(
-                          stream: widget.presenter.isFormValidStream,
-                          builder: (context, snapshot) {
-                            return RaisedButton(
-                              child: Text('Entrar'),
-                              onPressed: snapshot.data == true
-                                  ? widget.presenter.auth
-                                  : null,
-                            );
-                          }),
-                      const SizedBox(height: 8.0),
-                      FlatButton.icon(
-                        icon: Icon(Icons.person),
-                        label: Text('Criar Conta'),
-                        onPressed: () {},
-                      ),
-                    ],
+                                onChanged: widget.presenter.validatePassword,
+                              );
+                            }),
+                        const SizedBox(height: 32.0),
+                        StreamBuilder<bool>(
+                            stream: widget.presenter.isFormValidStream,
+                            builder: (context, snapshot) {
+                              return RaisedButton(
+                                child: Text('Entrar'),
+                                onPressed: snapshot.data == true
+                                    ? widget.presenter.auth
+                                    : null,
+                              );
+                            }),
+                        const SizedBox(height: 8.0),
+                        FlatButton.icon(
+                          icon: Icon(Icons.person),
+                          label: Text('Criar Conta'),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
