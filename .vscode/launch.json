@@ -13,13 +13,8 @@
         {
             "name": "survey_app",
             "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "survey_app (profile mode)",
-            "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
-        }
+            "program": "lib/main/main.dart"
+        },
     ]
 }
