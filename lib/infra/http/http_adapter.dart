@@ -38,8 +38,11 @@ class HttpAdapter implements HttpClient {
       case 204:
         return null;
         break;
-      default:
+      case 400:
         throw HttpError.badRequest;
+        break;
+      default:
+        throw HttpError.serverError;
     }
   }
 }
