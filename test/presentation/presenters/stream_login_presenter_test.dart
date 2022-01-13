@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -5,13 +7,19 @@ import 'package:meta/meta.dart';
 
 import 'package:survey_app/ui/pages/pages.dart';
 
+class LoginState {
+  String emailError;
+}
+
 class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
+  final _controller = StreamController<LoginState>.broadcast();
+  final _state = LoginState();
 
   StreamLoginPresenter({@required this.validation});
   @override
-  // TODO: implement emailErrorStream
-  Stream<String> get emailErrorStream => throw UnimplementedError();
+  Stream<String> get emailErrorStream =>
+      _controller.stream.map((state) => state.emailError);
 
   @override
   // TODO: implement isFormValidStream
@@ -31,7 +39,8 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   void validateEmail(String email) {
-    validation.validate(field: 'email', value: email);
+    _state.emailError = validation.validate(field: 'email', value: email);
+    _controller.add(_state);
   }
 
   @override
@@ -47,7 +56,7 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _controller.close();
   }
 }
 
@@ -58,13 +67,30 @@ abstract class Validation {
 class ValidationSpy extends Mock implements Validation {}
 
 void main() {
-  test('Should call validation with correct email', () {
-    final validation = ValidationSpy();
-    final sut = StreamLoginPresenter(validation: validation);
-    final email = faker.internet.email();
+  ValidationSpy validation;
+  StreamLoginPresenter sut;
+  String email;
 
+  setUp(() {
+    validation = ValidationSpy();
+    sut = StreamLoginPresenter(validation: validation);
+    email = faker.internet.email();
+  });
+
+  test('Should call validation with correct email', () {
     sut.validateEmail(email);
 
     verify(validation.validate(field: 'email', value: email)).called(1);
+  });
+
+  test('Should emit email error if validation fails', () {
+    when(validation.validate(
+      field: anyNamed('field'),
+      value: anyNamed('value'),
+    )).thenReturn('email error');
+
+    expectLater(sut.emailErrorStream, emits('email error'));
+
+    sut.validateEmail(email);
   });
 }
