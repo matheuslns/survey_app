@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../protocols/protocols.dart';
+import '../../domain/usecases/usecases.dart';
 import '../../ui/pages/pages.dart';
 
 class LoginState {
@@ -22,10 +23,14 @@ class LoginState {
 
 class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
+  final Authentication authentication;
   final _controller = StreamController<LoginState>.broadcast();
   var _state = LoginState();
 
-  StreamLoginPresenter({@required this.validation});
+  StreamLoginPresenter({
+    @required this.validation,
+    @required this.authentication,
+  });
 
   @override
   Stream<String> get emailErrorStream =>
@@ -65,9 +70,11 @@ class StreamLoginPresenter implements LoginPresenter {
   void _update() => _controller.add(_state);
 
   @override
-  Future<void> auth() {
-    // TODO: implement auth
-    throw UnimplementedError();
+  Future<void> auth() async {
+    await authentication.auth(AuthenticationParams(
+      email: _state.email,
+      secret: _state.password,
+    ));
   }
 
   @override
