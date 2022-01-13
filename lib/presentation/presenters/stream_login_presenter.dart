@@ -12,12 +12,13 @@ class LoginState {
 class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
   final _controller = StreamController<LoginState>.broadcast();
-  final _state = LoginState();
+  var _state = LoginState();
 
   StreamLoginPresenter({@required this.validation});
+
   @override
   Stream<String> get emailErrorStream =>
-      _controller.stream.map((state) => state.emailError);
+      _controller.stream.map((state) => state.emailError).distinct();
 
   @override
   // TODO: implement isFormValidStream
