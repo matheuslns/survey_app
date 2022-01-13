@@ -1,6 +1,8 @@
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:survey_app/domain/entities/entities.dart';
+import 'package:survey_app/domain/helpers/helpers.dart';
 
 import 'package:survey_app/domain/usecases/usecases.dart';
 import 'package:survey_app/presentation/presenters/presenters.dart';
@@ -28,6 +30,16 @@ void main() {
     mockValidationCall(field).thenReturn(value);
   }
 
+  PostExpectation mockAuthenticationCall() => when(authentication.auth(any));
+
+  void mockAuthentication() {
+    mockAuthenticationCall()
+        .thenAnswer((_) async => AccountEntity(faker.guid.guid()));
+  }
+
+  void mockAuthenticationError(DomainError error) =>
+      mockAuthenticationCall().thenThrow(error);
+
   setUp(() {
     validation = ValidationSpy();
     authentication = AuthenticationSpy();
@@ -37,6 +49,8 @@ void main() {
     );
     email = faker.internet.email();
     password = faker.internet.password();
+    mockValidation();
+    mockAuthentication();
   });
 
   test('Should call validation with correct email', () {
@@ -121,5 +135,27 @@ void main() {
       email: email,
       secret: password,
     ))).called(1);
+  });
+
+  test('Should emits correct values on Authentication success', () async {
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    await sut.auth();
+  });
+
+  test('Should emits correct values on invalidCredentialsError', () async {
+    mockAuthenticationError(DomainError.invalidCredentials);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emits(false));
+
+    sut.mainErrorStream.listen(expectAsync1(
+        (error) => expect(error, DomainError.invalidCredentials.description)));
+
+    await sut.auth();
   });
 }
