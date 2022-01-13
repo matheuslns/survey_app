@@ -11,6 +11,7 @@ void main() {
   ValidationSpy validation;
   StreamLoginPresenter sut;
   String email;
+  String password;
 
   PostExpectation mockValidationCall(String field) => when(
         validation.validate(
@@ -27,6 +28,7 @@ void main() {
     validation = ValidationSpy();
     sut = StreamLoginPresenter(validation: validation);
     email = faker.internet.email();
+    password = faker.internet.password();
   });
 
   test('Should call validation with correct email', () {
@@ -41,7 +43,54 @@ void main() {
     sut.emailErrorStream
         .listen(expectAsync1((error) => expect(error, 'email error')));
 
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
     sut.validateEmail(email);
     sut.validateEmail(email);
+  });
+
+  test('Should emit null if validation succeeds on email', () {
+    mockValidation(field: 'email');
+
+    sut.emailErrorStream.listen(expectAsync1((error) => expect(error, null)));
+
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validateEmail(email);
+    sut.validateEmail(email);
+  });
+
+  test('Should call validation with correct password', () {
+    sut.validatePassword(password);
+
+    verify(validation.validate(field: 'password', value: password)).called(1);
+  });
+
+  test('Should emit password error if validation fails', () {
+    mockValidation(field: 'password', value: 'password error');
+
+    sut.passwordErrorStream
+        .listen(expectAsync1((error) => expect(error, 'password error')));
+
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validatePassword(password);
+    sut.validatePassword(password);
+  });
+
+  test('Should emit null if validation succeeds on password', () {
+    mockValidation(field: 'password');
+
+    sut.passwordErrorStream
+        .listen(expectAsync1((error) => expect(error, null)));
+
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validatePassword(email);
+    sut.validatePassword(email);
   });
 }

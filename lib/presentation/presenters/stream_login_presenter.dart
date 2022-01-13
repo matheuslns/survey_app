@@ -6,7 +6,11 @@ import '../protocols/protocols.dart';
 import '../../ui/pages/pages.dart';
 
 class LoginState {
+  bool get isFormValid => false;
+  bool isLoading;
   String emailError;
+  String mainError;
+  String passwordError;
 }
 
 class StreamLoginPresenter implements LoginPresenter {
@@ -21,31 +25,35 @@ class StreamLoginPresenter implements LoginPresenter {
       _controller.stream.map((state) => state.emailError).distinct();
 
   @override
-  // TODO: implement isFormValidStream
-  Stream<bool> get isFormValidStream => throw UnimplementedError();
+  Stream<bool> get isFormValidStream =>
+      _controller.stream.map((state) => state.isFormValid).distinct();
 
   @override
-  // TODO: implement isLoadingStream
-  Stream<bool> get isLoadingStream => throw UnimplementedError();
+  Stream<bool> get isLoadingStream =>
+      _controller.stream.map((state) => state.isLoading).distinct();
 
   @override
-  // TODO: implement mainErrorStream
-  Stream<String> get mainErrorStream => throw UnimplementedError();
+  Stream<String> get mainErrorStream =>
+      _controller.stream.map((state) => state.mainError).distinct();
 
   @override
-  // TODO: implement passwordErrorStream
-  Stream<String> get passwordErrorStream => throw UnimplementedError();
+  Stream<String> get passwordErrorStream =>
+      _controller.stream.map((state) => state.passwordError).distinct();
 
   @override
   void validateEmail(String email) {
     _state.emailError = validation.validate(field: 'email', value: email);
-    _controller.add(_state);
+    _update();
   }
 
   @override
   void validatePassword(String password) {
-    // TODO: implement validatePassword
+    _state.passwordError =
+        validation.validate(field: 'password', value: password);
+    _update();
   }
+
+  void _update() => _controller.add(_state);
 
   @override
   Future<void> auth() {
