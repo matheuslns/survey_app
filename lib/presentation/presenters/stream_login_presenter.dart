@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:survey_app/domain/helpers/helpers.dart';
 
 import '../protocols/protocols.dart';
+import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 import '../../ui/pages/pages.dart';
 
@@ -25,7 +25,7 @@ class LoginState {
 class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
   final Authentication authentication;
-  final _controller = StreamController<LoginState>.broadcast();
+  var _controller = StreamController<LoginState>.broadcast();
   var _state = LoginState();
 
   StreamLoginPresenter({
@@ -35,23 +35,23 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   Stream<String> get emailErrorStream =>
-      _controller.stream.map((state) => state.emailError).distinct();
+      _controller?.stream?.map((state) => state.emailError)?.distinct();
 
   @override
   Stream<bool> get isFormValidStream =>
-      _controller.stream.map((state) => state.isFormValid).distinct();
+      _controller?.stream?.map((state) => state.isFormValid)?.distinct();
 
   @override
   Stream<bool> get isLoadingStream =>
-      _controller.stream.map((state) => state.isLoading).distinct();
+      _controller?.stream?.map((state) => state.isLoading)?.distinct();
 
   @override
   Stream<String> get mainErrorStream =>
-      _controller.stream.map((state) => state.mainError).distinct();
+      _controller?.stream?.map((state) => state.mainError)?.distinct();
 
   @override
   Stream<String> get passwordErrorStream =>
-      _controller.stream.map((state) => state.passwordError).distinct();
+      _controller?.stream?.map((state) => state.passwordError)?.distinct();
 
   @override
   void validateEmail(String email) {
@@ -68,7 +68,7 @@ class StreamLoginPresenter implements LoginPresenter {
     _update();
   }
 
-  void _update() => _controller.add(_state);
+  void _update() => _controller?.add(_state);
 
   @override
   Future<void> auth() async {
@@ -90,6 +90,7 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   void dispose() {
-    _controller.close();
+    _controller?.close();
+    _controller = null;
   }
 }
