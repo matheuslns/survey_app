@@ -21,6 +21,13 @@ class _LoginPageState extends State<LoginPage> {
     widget.presenter.dispose();
   }
 
+  void _hideKeyboard() {
+    final curentFocus = FocusScope.of(context);
+    if (!curentFocus.hasPrimaryFocus) {
+      curentFocus.unfocus();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,36 +46,39 @@ class _LoginPageState extends State<LoginPage> {
           }
         });
 
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              LoginHeader(),
-              HeadLine1(text: 'Login'),
-              Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Provider(
-                  create: (_) => widget.presenter,
-                  child: Form(
-                    child: Column(
-                      children: [
-                        EmailInput(),
-                        const SizedBox(height: 8),
-                        PasswordInput(),
-                        const SizedBox(height: 32.0),
-                        LoginButton(),
-                        const SizedBox(height: 8.0),
-                        FlatButton.icon(
-                          icon: Icon(Icons.person),
-                          label: Text('Criar Conta'),
-                          onPressed: () {},
-                        ),
-                      ],
+        return GestureDetector(
+          onTap: _hideKeyboard,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                LoginHeader(),
+                HeadLine1(text: 'Login'),
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Provider(
+                    create: (_) => widget.presenter,
+                    child: Form(
+                      child: Column(
+                        children: [
+                          EmailInput(),
+                          const SizedBox(height: 8),
+                          PasswordInput(),
+                          const SizedBox(height: 32.0),
+                          LoginButton(),
+                          const SizedBox(height: 8.0),
+                          FlatButton.icon(
+                            icon: Icon(Icons.person),
+                            label: Text('Criar Conta'),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }),
