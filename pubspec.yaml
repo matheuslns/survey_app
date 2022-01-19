@@ -39,6 +39,7 @@ dev_dependencies:
   provider:
   equatable:
   get: 3.4.2
+  flutter_secure_storage:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
