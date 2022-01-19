@@ -1,21 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mockito/mockito.dart';
-import 'package:survey_app/data/cache/save_secure_cache_storage.dart';
-import 'package:survey_app/domain/helpers/helpers.dart';
 import 'package:test/test.dart';
-import 'package:meta/meta.dart';
 
-class LocalStorageAdapter implements SaveSecureCacheStorage {
-  final FlutterSecureStorage secureStorage;
-
-  LocalStorageAdapter({@required this.secureStorage});
-
-  @override
-  Future<void> saveSecure(
-      {@required String key, @required String value}) async {
-    await secureStorage.write(key: 'any_key', value: 'any_value');
-  }
-}
+import 'package:survey_app/infra/cache/cache.dart';
 
 class FlutterSecureStorageSpy extends Mock implements FlutterSecureStorage {}
 
