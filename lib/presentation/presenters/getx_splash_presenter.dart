@@ -8,7 +8,7 @@ class GetxSplashPresenter implements SplashPresenter {
 
   var _navigateTo = RxString();
 
-  GetxSplashPresenter(this.loadCurrentAccount);
+  GetxSplashPresenter({this.loadCurrentAccount});
 
   @override
   Future<void> checkAccount() async {

@@ -27,7 +27,7 @@ void main() {
   setUp(() {
     token = faker.guid.guid();
     loadCurrentAccount = LoadCurrentAccountSpy();
-    sut = GetxSplashPresenter(loadCurrentAccount);
+    sut = GetxSplashPresenter(loadCurrentAccount: loadCurrentAccount);
     mockLoadCurrentAccount(account: AccountEntity(token));
   });
 
