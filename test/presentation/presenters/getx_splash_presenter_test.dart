@@ -3,11 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 import 'package:survey_app/domain/entities/entities.dart';
-import 'package:survey_app/domain/helpers/helpers.dart';
 
 import 'package:survey_app/domain/usecases/usecases.dart';
-import 'package:survey_app/presentation/presenters/presenters.dart';
-import 'package:survey_app/presentation/protocols/protocols.dart';
 import 'package:survey_app/ui/pages/pages.dart';
 
 class GetxSplashPresenter implements SplashPresenter {
@@ -19,8 +16,12 @@ class GetxSplashPresenter implements SplashPresenter {
 
   @override
   Future<void> checkAccount() async {
-    final account = await loadCurrentAccount.load();
-    _navigateTo.value = account.isNull ? '/login' : '/surveys';
+    try {
+      final account = await loadCurrentAccount.load();
+      _navigateTo.value = account.isNull ? '/login' : '/surveys';
+    } catch (error) {
+      _navigateTo.value = '/login';
+    }
   }
 
   @override
@@ -34,8 +35,15 @@ void main() {
   LoadCurrentAccount loadCurrentAccount;
   String token;
 
+  PostExpectation mockLoadCurrentAccountCall() =>
+      when(loadCurrentAccount.load());
+
   mockLoadCurrentAccount({AccountEntity account}) {
-    when(loadCurrentAccount.load()).thenAnswer((_) async => account);
+    mockLoadCurrentAccountCall().thenAnswer((_) async => account);
+  }
+
+  mockLoadCurrentError() {
+    mockLoadCurrentAccountCall().thenThrow(Exception());
   }
 
   setUp(() {
@@ -60,6 +68,14 @@ void main() {
 
   test('Should go to login page on null result', () async {
     mockLoadCurrentAccount(account: null);
+
+    sut.navigateToStream.listen(expectAsync1((page) => expect(page, '/login')));
+
+    await sut.checkAccount();
+  });
+
+  test('Should go to login page on error', () async {
+    mockLoadCurrentError();
 
     sut.navigateToStream.listen(expectAsync1((page) => expect(page, '/login')));
 
