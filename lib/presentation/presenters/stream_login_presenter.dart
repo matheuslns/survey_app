@@ -54,6 +54,10 @@ class StreamLoginPresenter implements LoginPresenter {
       _controller?.stream?.map((state) => state.passwordError)?.distinct();
 
   @override
+  // TODO: implement navigateToStream
+  Stream<String> get navigateToStream => throw UnimplementedError();
+
+  @override
   void validateEmail(String email) {
     _state.email = email;
     _state.emailError = validation.validate(field: 'email', value: email);
