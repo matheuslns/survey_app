@@ -1,19 +1,28 @@
+import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
+import 'package:survey_app/domain/entities/account_entity.dart';
+import 'package:survey_app/domain/helpers/helpers.dart';
+import 'package:survey_app/domain/usecases/usecases.dart';
 import 'package:test/test.dart';
 import 'package:meta/meta.dart';
 
-class LocalLoadCurrentAccount {
+class LocalLoadCurrentAccount implements LoadCurrentAccount {
   final FetchSecureCacheStorage fetchSecureCacheStorage;
 
   LocalLoadCurrentAccount({@required this.fetchSecureCacheStorage});
 
-  Future<void> load() async {
-    fetchSecureCacheStorage.fetchSecure('token');
+  Future<AccountEntity> load() async {
+    try {
+      final token = await fetchSecureCacheStorage.fetchSecure('token');
+      return AccountEntity(token);
+    } catch (error) {
+      throw DomainError.unexpected;
+    }
   }
 }
 
 abstract class FetchSecureCacheStorage {
-  Future<void> fetchSecure(String key);
+  Future<String> fetchSecure(String key);
 }
 
 class FetchSecureCacheStorageSpy extends Mock
@@ -22,16 +31,38 @@ class FetchSecureCacheStorageSpy extends Mock
 void main() {
   LocalLoadCurrentAccount sut;
   FetchSecureCacheStorage fetchSecureCacheStorage;
+  String token;
 
   setUp(() {
     fetchSecureCacheStorage = FetchSecureCacheStorageSpy();
     sut = LocalLoadCurrentAccount(
       fetchSecureCacheStorage: fetchSecureCacheStorage,
     );
+
+    token = faker.guid.guid();
   });
+
   test('Should call FetchSecureCacheStorage with correct value', () async {
     await sut.load();
 
     verify(fetchSecureCacheStorage.fetchSecure('token'));
+  });
+
+  test('Should return an AccountEntity', () async {
+    when(fetchSecureCacheStorage.fetchSecure(any))
+        .thenAnswer((realInvocation) async => token);
+
+    final account = await sut.load();
+
+    expect(account, AccountEntity(token));
+  });
+
+  test('Should throw UnexpectedError if fetchSecureCacheStorage throws',
+      () async {
+    when(fetchSecureCacheStorage.fetchSecure(any)).thenThrow(Exception());
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
