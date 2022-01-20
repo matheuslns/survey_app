@@ -41,6 +41,16 @@ void main() {
       verify(secureStorage.read(key: 'any_key'));
     });
 
+    test('Should fetch secure return correct value', () async {
+      when(secureStorage.read(
+        key: anyNamed('key'),
+      )).thenAnswer((_) async => 'any_value');
+
+      final value = await sut.fetchSecure('any_key');
+
+      expect(value, 'any_value');
+    });
+
     test('Should throw if fetch secure throws', () async {
       when(secureStorage.read(
         key: anyNamed('key'),
