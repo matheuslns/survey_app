@@ -15,20 +15,40 @@ void main() {
     sut = LocalStorageAdapter(secureStorage: secureStorage);
   });
 
-  test('Should call save secure with correct values', () async {
-    await sut.saveSecure(key: 'any_key', value: 'any_value');
+  group('Save secure', () {
+    test('Should call save secure with correct values', () async {
+      await sut.saveSecure(key: 'any_key', value: 'any_value');
 
-    verify(secureStorage.write(key: 'any_key', value: 'any_value'));
+      verify(secureStorage.write(key: 'any_key', value: 'any_value'));
+    });
+
+    test('Should throw if  save secure throws', () async {
+      when(secureStorage.write(
+        key: anyNamed('key'),
+        value: anyNamed('value'),
+      )).thenThrow(Exception());
+
+      final future = sut.saveSecure(key: 'any_key', value: 'any_value');
+
+      expect(future, throwsA(TypeMatcher<Exception>()));
+    });
   });
 
-  test('Should throw UnexpactedError if  save secure throws', () async {
-    when(secureStorage.write(
-      key: anyNamed('key'),
-      value: anyNamed('value'),
-    )).thenThrow(Exception());
+  group('Fetch secure', () {
+    test('Should call fetch secure with correct value', () async {
+      await sut.fetchSecure('any_key');
 
-    final future = sut.saveSecure(key: 'any_key', value: 'any_value');
+      verify(secureStorage.read(key: 'any_key'));
+    });
 
-    expect(future, throwsA(TypeMatcher<Exception>()));
+    test('Should throw if fetch secure throws', () async {
+      when(secureStorage.read(
+        key: anyNamed('key'),
+      )).thenThrow(Exception());
+
+      final future = sut.fetchSecure('any_key');
+
+      expect(future, throwsA(TypeMatcher<Exception>()));
+    });
   });
 }
