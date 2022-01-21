@@ -7,6 +7,7 @@ import 'package:survey_app/domain/helpers/helpers.dart';
 import 'package:survey_app/domain/usecases/usecases.dart';
 import 'package:survey_app/presentation/presenters/presenters.dart';
 import 'package:survey_app/presentation/protocols/protocols.dart';
+import 'package:survey_app/ui/helpers/errors/errors.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
@@ -26,7 +27,7 @@ void main() {
         ),
       );
 
-  void mockValidation({String field, String value}) {
+  void mockValidation({String field, ValidationError value}) {
     mockValidationCall(field).thenReturn(value);
   }
 
@@ -60,10 +61,10 @@ void main() {
   });
 
   test('Should emit email error if validation fails', () {
-    mockValidation(field: 'email', value: 'email error');
+    mockValidation(field: 'email', value: ValidationError.invalidField);
 
     sut.emailErrorStream
-        .listen(expectAsync1((error) => expect(error, 'email error')));
+        .listen(expectAsync1((error) => expect(error, UIError.invalidField)));
 
     sut.isFormValidStream
         .listen(expectAsync1((isValid) => expect(isValid, false)));
@@ -89,10 +90,10 @@ void main() {
   });
 
   test('Should emit password error if validation fails', () {
-    mockValidation(field: 'password', value: 'password error');
+    mockValidation(field: 'password', value: ValidationError.requiredField);
 
     sut.passwordErrorStream
-        .listen(expectAsync1((error) => expect(error, 'password error')));
+        .listen(expectAsync1((error) => expect(error, UIError.requiredField)));
 
     sut.isFormValidStream
         .listen(expectAsync1((isValid) => expect(isValid, false)));
@@ -153,8 +154,8 @@ void main() {
 
     expectLater(sut.isLoadingStream, emits(false));
 
-    sut.mainErrorStream.listen(expectAsync1(
-        (error) => expect(error, DomainError.invalidCredentials.description)));
+    sut.mainErrorStream.listen(
+        expectAsync1((error) => expect(error, UIError.invalidCredentials)));
 
     await sut.auth();
   });
@@ -166,8 +167,8 @@ void main() {
 
     expectLater(sut.isLoadingStream, emits(false));
 
-    sut.mainErrorStream.listen(expectAsync1(
-        (error) => expect(error, DomainError.unexpected.description)));
+    sut.mainErrorStream
+        .listen(expectAsync1((error) => expect(error, UIError.unexpected)));
 
     await sut.auth();
   });

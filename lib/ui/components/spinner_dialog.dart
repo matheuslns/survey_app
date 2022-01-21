@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helpers/i18n/i18n.dart';
+
 void showLoading(BuildContext context) {
   showDialog(
     context: context,
@@ -8,10 +10,10 @@ void showLoading(BuildContext context) {
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             CircularProgressIndicator(),
             SizedBox(height: 10),
-            Text('Aguarde...', textAlign: TextAlign.center),
+            Text(R.strings.loading, textAlign: TextAlign.center),
           ],
         ),
       ],

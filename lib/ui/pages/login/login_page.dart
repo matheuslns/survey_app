@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
 import '../../components/components.dart';
+import '../../helpers/errors/errors.dart';
 import '../../pages/pages.dart';
+import '../../helpers/i18n/i18n.dart';
 import 'components/components.dart';
 
 class LoginPage extends StatelessWidget {
@@ -32,7 +34,7 @@ class LoginPage extends StatelessWidget {
 
         presenter.mainErrorStream.listen((error) {
           if (error != null) {
-            showErrorMessage(context, error);
+            showErrorMessage(context, error.description);
           }
         });
 
@@ -49,7 +51,7 @@ class LoginPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 LoginHeader(),
-                HeadLine1(text: 'Login'),
+                HeadLine1(text: R.strings.login),
                 Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Provider(
@@ -65,7 +67,7 @@ class LoginPage extends StatelessWidget {
                           const SizedBox(height: 8.0),
                           FlatButton.icon(
                             icon: Icon(Icons.person),
-                            label: Text('Criar Conta'),
+                            label: Text(R.strings.addAccount),
                             onPressed: () {},
                           ),
                         ],
