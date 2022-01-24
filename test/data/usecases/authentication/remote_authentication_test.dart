@@ -56,7 +56,7 @@ void main() {
     ));
   });
 
-  test('Should throw UnexpactedError if HttpClient returns 400', () async {
+  test('Should throw UnexpectedError if HttpClient returns 400', () async {
     mockHttpError(HttpError.badRequest);
 
     final future = sut.auth(params);
@@ -64,7 +64,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('Should throw UnexpactedError if HttpClient returns 404', () async {
+  test('Should throw UnexpectedError if HttpClient returns 404', () async {
     mockHttpError(HttpError.notFound);
 
     final future = sut.auth(params);
@@ -72,7 +72,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('Should throw UnexpactedError if HttpClient returns 404', () async {
+  test('Should throw UnexpectedError if HttpClient returns 404', () async {
     mockHttpError(HttpError.notFound);
 
     final future = sut.auth(params);
@@ -80,7 +80,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('Should throw UnexpactedError if HttpClient returns 500', () async {
+  test('Should throw UnexpectedError if HttpClient returns 500', () async {
     mockHttpError(HttpError.serverError);
 
     final future = sut.auth(params);
@@ -107,7 +107,7 @@ void main() {
   });
 
   test(
-      'Should return throw UnexpactedError if HttpClient returns 200 with invalid data',
+      'Should return throw UnexpectedError if HttpClient returns 200 with invalid data',
       () async {
     mockHttpData({'invalid_key': 'invalid_value'});
 

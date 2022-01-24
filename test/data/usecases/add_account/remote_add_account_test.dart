@@ -64,7 +64,7 @@ void main() {
     ));
   });
 
-  test('Should throw UnexpactedError if HttpClient returns 400', () async {
+  test('Should throw UnexpectedError if HttpClient returns 400', () async {
     mockHttpError(HttpError.badRequest);
 
     final future = sut.add(params);
@@ -72,7 +72,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('Should throw UnexpactedError if HttpClient returns 404', () async {
+  test('Should throw UnexpectedError if HttpClient returns 404', () async {
     mockHttpError(HttpError.notFound);
 
     final future = sut.add(params);
@@ -80,7 +80,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('Should throw UnexpactedError if HttpClient returns 500', () async {
+  test('Should throw UnexpectedError if HttpClient returns 500', () async {
     mockHttpError(HttpError.serverError);
 
     final future = sut.add(params);
@@ -88,13 +88,12 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('Should throw InvalidCredentialsError if HttpClient returns 401',
-      () async {
-    mockHttpError(HttpError.unauthorized);
+  test('Should throw emailInUse if HttpClient returns 403', () async {
+    mockHttpError(HttpError.forbidden);
 
     final future = sut.add(params);
 
-    expect(future, throwsA(DomainError.invalidCredentials));
+    expect(future, throwsA(DomainError.emailInUse));
   });
 
   test('Should return an Account if HttpClient returns 200', () async {
@@ -107,7 +106,7 @@ void main() {
   });
 
   test(
-      'Should return throw UnexpactedError if HttpClient returns 200 with invalid data',
+      'Should return throw UnexpectedError if HttpClient returns 200 with invalid data',
       () async {
     mockHttpData({'invalid_key': 'invalid_value'});
 
